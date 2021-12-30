@@ -41,3 +41,25 @@ Once you have these states, working out the transition rules needed for each sta
 It's not hard to make the rearrangement of letters more complicated, but at the expense of additional machine states. Using such a small number of states also incurs some other limitations: it won't work if there is any punctuation other than a terminating full-stop, and leaves two-letter words unaltered. You can fix all that too, but at the expense of using more machine states.
 
 The scrambling implemented is an _involution_: to unscramble the output (recover the original text) you just run it through the same Turing machine again.
+
+
+
+### Solution 2: Finding the least visually similar rearrangements
+
+If we wanted to rearrange the letters so that each rearranged word looked as little as possible like the original word, how should we do it? My idea was to permute the letters so that, on average, each permuted letter looks as visually dissimilar as possible from the letter that originally occupied that position in the word.
+
+There are two ingredients that go into this.
+
+- **A table of the visual similarity of each pair of letters.** I took this from a research paper called [A letter visual-similarity matrix for Latin-based alphabets](https://link.springer.com/article/10.3758/s13428-012-0271-4). According to the results of the paper, human judges consider the most similar letter pairs to be `il`, `bd`, `pq`, `hn` and  `vy`.
+The least similar letter pairs were `jo`, `tw`, `qw`, `rw` and `ko`.
+
+- **The [Hungarian algorithm](https://en.wikipedia.org/wiki/Hungarian_algorithm)**. The table of visual similarity gives us a way to score candidate rearrangements, but for longer words the number of permutations is huge and enumerating and scoring all of them becomes very slow.
+But actually we have an instance of the [Assignment Problem](https://en.wikipedia.org/wiki/Assignment_problem), so we can solve it more efficiently using the Hungarian Algorithm; I used [this library](https://github.com/benchaplin/hungarian-algorithm).
+
+I cut a bunch of corners here, and there's at least one bug somewhere, but you can get some results out of it.
+
+aphyp ewn arye verobeyyd!
+
+
+
+
